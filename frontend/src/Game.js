@@ -34,7 +34,7 @@ function Game() {
       <h1 className={styles['game-title']}>TODO: Implement your game UI here!</h1>
       <p className={styles.description}>Current Plr: {curPlr?.username}</p>
       <audio controls>
-        <source src="dont_stop_believing_clip.mp3" type="audio/mpeg" />
+        <source src="songs/dont_stop_believing_clip.mp3" type="audio/mpeg" />
         Your browser does not support the audio element.
       </audio>
     </div>
