@@ -1,3 +1,4 @@
+/* eslint-disable no-empty-pattern */
 import React, { useState, useEffect } from 'react';
 import client from '@urturn/client';
 // import styles from './Game.module.css';
@@ -23,12 +24,17 @@ function Game() {
     };
   }, []);
 
-  // eslint-disable-next-line no-unused-vars
   const [curPlr, setCurPlr] = useState();
 
   const {
     joinable = true,
+    state = {},
   } = roomState;
+  const {
+    rounds = [],
+  } = state;
+
+  const currentRound = rounds.length - 1;
 
   // load current player, which is initially null
   useEffect(() => {
@@ -43,7 +49,7 @@ function Game() {
     <div>
       {joinable
         ? <HomeScreen />
-        : <InGame postRound={postRound} /> }
+        : <InGame postRound={rounds[currentRound]?.playerPoints[curPlr.id]} /> }
     </div>
   );
 }

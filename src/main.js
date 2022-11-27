@@ -30,7 +30,7 @@ function onPlayerQuit(player, roomState) {
 
 const NewRound = {
   song: "dont_stop_believing_clip",
-  player_points: {},
+  playerPoints: {},
 }
 
 function onPlayerMove(player, move, roomState) {
@@ -38,7 +38,7 @@ function onPlayerMove(player, move, roomState) {
   const { type, data } = move;
   const { rounds } = state;
 
-  const current_round = rounds.length - 1;
+  const currentRound = rounds.length - 1;
 
   switch (type) {
     case MoveTypes.StartGame:
@@ -47,7 +47,8 @@ function onPlayerMove(player, move, roomState) {
     case MoveTypes.Guess:
       logger.info("DATA: ", data)
       if (data === "a b c") {
-        rounds[current_round][player.id] = 100;
+        rounds[currentRound].playerPoints[player.id] = 100;
+        return { state: state }
       } else {
 
       }
