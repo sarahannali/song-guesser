@@ -44,7 +44,7 @@ function PlayerResults({
   );
 }
 
-function PostRoundScreen({ totalPoints, playerPoints }) {
+function PostRoundScreen({ totalPoints, playerPoints, finished }) {
   return (
     <Stack
       spacing={2}
@@ -63,6 +63,7 @@ function PostRoundScreen({ totalPoints, playerPoints }) {
           firstPlace={idx === 0}
         />
       ))}
+      {!finished && (
       <Button
         variant="contained"
         size="large"
@@ -70,11 +71,13 @@ function PostRoundScreen({ totalPoints, playerPoints }) {
       >
         NEXT ROUND
       </Button>
+      )}
     </Stack>
   );
 }
 
 PostRoundScreen.propTypes = {
+  finished: PropTypes.bool.isRequired,
   totalPoints: PropTypes.objectOf(PropTypes.number).isRequired,
   playerPoints: PropTypes.objectOf(PropTypes.number).isRequired,
 };

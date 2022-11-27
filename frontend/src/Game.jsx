@@ -70,6 +70,7 @@ function InGame({
   return finished || (playerPoints && playerPoints[playerID])
     ? (
       <PostRoundScreen
+        finished={finished}
         totalPoints={totalPoints}
         playerPoints={playerPoints}
       />

@@ -9,17 +9,18 @@ const MoveTypes = Object.freeze({
 });
 
 const Answer = Object.freeze({
-  dont_stop_believing_clip: 'lonely world she',
+  Dont_Stop_Believing: 'lonely world',
   Stitches: 'no ones ever',
   Firework: 'ignite the light',
-  MrBrightside: 'off her dress'
+  MrBrightside: 'off her dress',
+  You_Belong_With_Me: 'bleachers'
 })
 
 function onRoomStart(roomState) {
   return {
     state: {
       rounds: [],
-      songs: ["dont_stop_believing_clip", "Stitches", "Firework", "MrBrightside"],
+      songs: ["Dont_Stop_Believing", "Stitches", "Firework", "MrBrightside", "You_Belong_With_Me"],
       currentSongIndex: 0,
       totalPoints: {},
     }
@@ -75,9 +76,14 @@ function onPlayerMove(player, move, roomState) {
       }
       break;
     case MoveTypes.NewRound:
+      if(rounds.length < 10 && currentSongIndex !== songs.length-1){
       state.currentSongIndex += 1;
       rounds.push(getNewRound(songs, currentSongIndex));
       return { state: state }
+      }else
+        {
+          return { finished: true }
+        }
     default:
       return {}
   }
