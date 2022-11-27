@@ -28,6 +28,7 @@ function Game() {
     joinable = true,
     state = {},
     finished = false,
+    players = [],
   } = roomState;
   const {
     rounds = [],
@@ -47,8 +48,6 @@ function Game() {
     setupCurPlr();
   }, []);
 
-  console.log(rounds[currentRound]);
-
   return (
     <div>
       {joinable
@@ -61,6 +60,7 @@ function Game() {
             playerID={curPlr.id}
             song={songs.length > 0 ? songs[currentSongIndex] : ''}
             answerLength={rounds[currentRound]?.answerLength || 0}
+            players={players}
           />
         ) }
     </div>
@@ -68,7 +68,7 @@ function Game() {
 }
 
 function InGame({
-  finished, totalPoints, playerPoints, playerID, song, answerLength,
+  finished, totalPoints, playerPoints, playerID, song, answerLength, players,
 }) {
   return finished || (playerPoints && playerPoints[playerID])
     ? (
@@ -76,12 +76,16 @@ function InGame({
         finished={finished}
         totalPoints={totalPoints}
         playerPoints={playerPoints}
+        players={players}
       />
     )
     : <GuessScreen song={song} answerLength={answerLength} />;
 }
 
 InGame.propTypes = {
+  players: PropTypes.arrayOf(PropTypes.objectOf({
+    username: PropTypes.string,
+  })).isRequired,
   answerLength: PropTypes.number.isRequired,
   finished: PropTypes.bool.isRequired,
   totalPoints: PropTypes.objectOf(PropTypes.number).isRequired,

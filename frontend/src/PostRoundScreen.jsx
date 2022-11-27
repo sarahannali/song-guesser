@@ -44,7 +44,10 @@ function PlayerResults({
   );
 }
 
-function PostRoundScreen({ totalPoints, playerPoints, finished }) {
+function PostRoundScreen({
+  totalPoints, playerPoints, finished, players,
+}) {
+  console.log('PLAYERS: ', players);
   return (
     <Stack
       spacing={2}
@@ -57,7 +60,7 @@ function PostRoundScreen({ totalPoints, playerPoints, finished }) {
     >
       {Object.keys(playerPoints).map((playerID, idx) => (
         <PlayerResults
-          username={playerID}
+          username={players.find((player) => player.id === playerID).username}
           roundPoints={playerPoints[playerID]}
           totalPoints={totalPoints[playerID]}
           firstPlace={idx === 0}
@@ -77,6 +80,9 @@ function PostRoundScreen({ totalPoints, playerPoints, finished }) {
 }
 
 PostRoundScreen.propTypes = {
+  players: PropTypes.arrayOf(PropTypes.objectOf({
+    username: PropTypes.string,
+  })).isRequired,
   finished: PropTypes.bool.isRequired,
   totalPoints: PropTypes.objectOf(PropTypes.number).isRequired,
   playerPoints: PropTypes.objectOf(PropTypes.number).isRequired,
