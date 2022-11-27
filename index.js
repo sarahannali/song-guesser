@@ -5,7 +5,8 @@
 const MoveTypes = Object.freeze({
   StartGame: 'start_game',
   Guess: 'guess',
-  NewRound: 'new_round'
+  NewRound: 'new_round',
+  ForceEndRound: 'force_end_round'
 });
 
 const Answer = Object.freeze({
@@ -78,6 +79,9 @@ function onPlayerMove(player, move, roomState) {
       } else {
         throw new Error("Wrong answer!")
       }
+    case MoveTypes.ForceEndRound:
+      rounds[currentRound].playerPoints[player.id] = 0;
+      return { state: state }
     case MoveTypes.NewRound:
       if(rounds.length < 10 && currentSongIndex !== songs.length-1){
       state.currentSongIndex += 1;
