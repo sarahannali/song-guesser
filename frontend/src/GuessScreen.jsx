@@ -7,10 +7,14 @@ import PropTypes from 'prop-types';
 import client from '@urturn/client';
 import useFlash from './Hooks/useFlash';
 import { SHAKE_KEYFRAMES } from './Helpers/constants';
+import Timer from './Helpers/Timer';
+
+const IN_GAME_TIMEOUT_MS = 10000; // 5 minutes
 
 function GuessScreen({ song, answerLength }) {
   const refs = useRef([]);
   const [answer, setAnswer] = useState(Array(answerLength).fill(''));
+  const [startTime, setStartTime] = useState(null);
   const { flash, flashing } = useFlash();
 
   const setFocus = (idx) => refs.current[idx].focus();
@@ -24,8 +28,6 @@ function GuessScreen({ song, answerLength }) {
     }
   };
 
-  console.log(answerLength);
-
   return (
     <Stack
       spacing={2}
@@ -37,6 +39,18 @@ function GuessScreen({ song, answerLength }) {
         overflow: 'hidden',
       }}
     >
+      {startTime && (
+        <Timer
+          startTime={startTime}
+          timeoutBufferMs={500}
+          timeoutMs={IN_GAME_TIMEOUT_MS}
+          onTimeout={() => {
+            client.makeMove({ type: 'force_end_round' }).catch(console.log);
+          }}
+          prefix=""
+          suffix=""
+        />
+      )}
       <Grid
         spacing={1}
         container
@@ -62,7 +76,11 @@ function GuessScreen({ song, answerLength }) {
         ))}
 
       </Grid>
-      <audio controls autoPlay>
+      <audio
+        controls
+        autoPlay
+        onEnded={() => setStartTime(Date.now())}
+      >
         <source src={`songs/${song}.mp3`} type="audio/mpeg" />
         Your browser does not support the audio element.
       </audio>

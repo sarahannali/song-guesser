@@ -47,9 +47,9 @@ function PlayerResults({
 function PostRoundScreen({
   totalPoints, playerPoints, finished, players,
 }) {
-  console.log('PLAYERS: ', players);
   return (
     <Stack
+      tabIndex="0"
       spacing={2}
       sx={{
         height: '100vh',
@@ -71,6 +71,8 @@ function PostRoundScreen({
         variant="contained"
         size="large"
         onClick={() => client.makeMove({ type: 'new_round' })}
+        autoFocus
+        disableRipple
       >
         NEXT ROUND
       </Button>
