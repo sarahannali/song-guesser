@@ -10,7 +10,9 @@ function onRoomStart(roomState) {
   const { logger } = roomState;
   return {
     state: {
-      rounds: []
+      rounds: [],
+      songs: ["dont_stop_believing_clip"],
+      currentSongIndex: 0
     }
   }
 }
@@ -29,21 +31,30 @@ function onPlayerQuit(player, roomState) {
   return {}
 }
 
-const NewRound = {
-  song: "dont_stop_believing_clip",
+
+
+function getNextSong(){
+  
+}
+
+function getNewRound(songs, currentSongIndex) {
+  return {
+  song: "dont_stop_believing_clip", //change to state.songs[state.currentSongIndex]
   playerPoints: {},
+  }
 }
 
 function onPlayerMove(player, move, roomState) {
   const { logger, state } = roomState
   const { type, data } = move;
-  const { rounds } = state;
+  const { rounds, songs, currentSongIndex } = state;
 
   const currentRound = rounds.length - 1;
 
   switch (type) {
     case MoveTypes.StartGame:
-      rounds.push(NewRound);
+      //shuffle songs
+      rounds.push(getNewRound(songs, currentSongIndex));
       return { joinable: false, state: state }
     case MoveTypes.Guess:
       logger.info("DATA: ", data)
@@ -55,7 +66,8 @@ function onPlayerMove(player, move, roomState) {
       }
       break;
     case MoveTypes.NewRound:
-      rounds.push(NewRound);
+      state.currentSongIndex += 1;
+      rounds.push(getNewRound(songs, currentSongIndex));
       return { state: state }
     default:
       return {}
