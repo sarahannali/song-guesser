@@ -10,8 +10,6 @@ import HomeScreen from './HomeScreen';
 
 function Game() {
   const [roomState, setRoomState] = useState(client.getRoomState() || {});
-  // eslint-disable-next-line no-unused-vars
-  const [postRound, setPostRound] = useState(false);
 
   // setup event listener for updating roomState when client fires
   useEffect(() => {
@@ -49,17 +47,26 @@ function Game() {
     <div>
       {joinable
         ? <HomeScreen />
-        : <InGame postRound={rounds[currentRound]?.playerPoints[curPlr.id]} /> }
+        : (
+          <InGame
+            playerPoints={rounds[currentRound]?.playerPoints || {}}
+            playerID={curPlr.id}
+          />
+        ) }
     </div>
   );
 }
 
-function InGame({ postRound }) {
-  return postRound ? <PostRoundScreen /> : <GuessScreen />;
+function InGame({ playerPoints, playerID }) {
+  console.log('PLAYER POINTS: ', playerPoints);
+  return playerPoints && playerPoints[playerID]
+    ? <PostRoundScreen playerPoints={playerPoints} />
+    : <GuessScreen />;
 }
 
 InGame.propTypes = {
-  postRound: PropTypes.bool.isRequired,
+  playerPoints: PropTypes.objectOf(PropTypes.number).isRequired,
+  playerID: PropTypes.string.isRequired,
 };
 
 export default Game;

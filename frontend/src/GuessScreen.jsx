@@ -82,7 +82,6 @@ function WordField({
       variant="outlined"
       autoComplete="off"
       inputProps={{ style: { fontSize: useMediaQuery('(max-width:600px)') ? '1.5em' : '2rem' } }}
-      InputProps={{ disableOutline: true }}
       sx={{
         backgroundColor: 'white',
         borderRadius: '5px',

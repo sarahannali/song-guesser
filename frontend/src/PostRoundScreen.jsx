@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import { Button, Typography } from '@mui/material';
 import client from '@urturn/client';
 
-function PlayerResults({ firstPlace }) {
+function PlayerResults({ username, points, firstPlace }) {
   return (
     <Stack
       spacing={2}
@@ -24,8 +24,8 @@ function PlayerResults({ firstPlace }) {
         }}
       >
         <Stack direction="row" justifyContent="space-between">
-          <Typography variant="h5">USERNAME</Typography>
-          <Typography variant="h5">108</Typography>
+          <Typography variant="h5">{username}</Typography>
+          <Typography variant="h5">{points}</Typography>
         </Stack>
       </Box>
       <Box
@@ -33,13 +33,17 @@ function PlayerResults({ firstPlace }) {
           color: 'green',
         }}
       >
-        <Typography variant="h5">+108</Typography>
+        <Typography variant="h5">
+          +
+          {points}
+        </Typography>
       </Box>
     </Stack>
   );
 }
 
-function PostRoundScreen() {
+function PostRoundScreen({ playerPoints }) {
+  console.log('2: ', playerPoints);
   return (
     <Stack
       spacing={2}
@@ -50,9 +54,13 @@ function PostRoundScreen() {
         alignItems: 'center',
       }}
     >
-      <PlayerResults firstPlace />
-      <PlayerResults />
-      <PlayerResults />
+      {Object.keys(playerPoints).map((playerID, idx) => (
+        <PlayerResults
+          username={playerID}
+          points={playerPoints[playerID]}
+          firstPlace={idx === 0}
+        />
+      ))}
       <Button
         variant="contained"
         size="large"
@@ -64,7 +72,13 @@ function PostRoundScreen() {
   );
 }
 
+PostRoundScreen.propTypes = {
+  playerPoints: PropTypes.objectOf(PropTypes.number).isRequired,
+};
+
 PlayerResults.propTypes = {
+  username: PropTypes.string.isRequired,
+  points: PropTypes.number.isRequired,
   firstPlace: PropTypes.bool,
 };
 
