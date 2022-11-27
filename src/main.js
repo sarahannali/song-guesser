@@ -10,14 +10,16 @@ const MoveTypes = Object.freeze({
 
 const Answer = Object.freeze({
   dont_stop_believing_clip: 'lonely world she',
-  stiches: 'no ones ever'
+  Stitches: 'no ones ever',
+  Firework: 'ignite the light',
+  MrBrightside: 'off her dress'
 })
 
 function onRoomStart(roomState) {
   return {
     state: {
       rounds: [],
-      songs: ["dont_stop_believing_clip", "stiches"],
+      songs: ["dont_stop_believing_clip", "Stitches", "Firework", "MrBrightside"],
       currentSongIndex: 0,
       totalPoints: {},
     }
