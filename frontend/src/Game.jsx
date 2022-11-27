@@ -27,6 +27,7 @@ function Game() {
   const {
     joinable = true,
     state = {},
+    finished = false,
   } = roomState;
   const {
     rounds = [],
@@ -52,6 +53,7 @@ function Game() {
         ? <HomeScreen />
         : (
           <InGame
+            finished={finished}
             totalPoints={totalPoints}
             playerPoints={rounds[currentRound]?.playerPoints || {}}
             playerID={curPlr.id}
@@ -63,10 +65,9 @@ function Game() {
 }
 
 function InGame({
-  totalPoints, playerPoints, playerID, song,
+  finished, totalPoints, playerPoints, playerID, song,
 }) {
-  console.log('PLAYER POINTS: ', playerPoints);
-  return playerPoints && playerPoints[playerID]
+  return finished || (playerPoints && playerPoints[playerID])
     ? (
       <PostRoundScreen
         totalPoints={totalPoints}
@@ -77,6 +78,7 @@ function InGame({
 }
 
 InGame.propTypes = {
+  finished: PropTypes.bool.isRequired,
   totalPoints: PropTypes.objectOf(PropTypes.number).isRequired,
   playerPoints: PropTypes.objectOf(PropTypes.number).isRequired,
   playerID: PropTypes.string.isRequired,
