@@ -4,11 +4,14 @@ import React, { useState, useRef } from 'react';
 import Stack from '@mui/material/Stack';
 import { Grid, TextField, useMediaQuery } from '@mui/material';
 import PropTypes from 'prop-types';
+import client from '@urturn/client';
 
 function GuessScreen() {
   const refs = useRef([]);
+  const [answer, setAnswer] = useState(['', '', '']);
 
   const setFocus = (idx) => refs.current[idx].focus();
+  const submitAnswer = () => client.makeMove({ type: 'guess', data: answer.join(' ') });
 
   return (
     <Stack
@@ -29,6 +32,9 @@ function GuessScreen() {
           <WordField
             idx={0}
             setFocus={setFocus}
+            answer={answer}
+            submitAnswer={submitAnswer}
+            setAnswer={setAnswer}
             innerRef={(el) => { refs.current[0] = el; }}
           />
         </Grid>
@@ -36,6 +42,9 @@ function GuessScreen() {
           <WordField
             idx={1}
             setFocus={setFocus}
+            answer={answer}
+            submitAnswer={submitAnswer}
+            setAnswer={setAnswer}
             innerRef={(el) => { refs.current[1] = el; }}
           />
         </Grid>
@@ -43,6 +52,9 @@ function GuessScreen() {
           <WordField
             idx={2}
             setFocus={setFocus}
+            answer={answer}
+            submitAnswer={submitAnswer}
+            setAnswer={setAnswer}
             innerRef={(el) => { refs.current[2] = el; }}
           />
         </Grid>
@@ -55,9 +67,14 @@ function GuessScreen() {
   );
 }
 
-// eslint-disable-next-line no-unused-vars
-function WordField({ idx, setFocus, innerRef }) {
-  const [text, setText] = useState('');
+function WordField({
+  idx,
+  setFocus,
+  innerRef,
+  answer,
+  setAnswer,
+  submitAnswer,
+}) {
   return (
     <TextField
       autoFocus={idx === 0}
@@ -70,14 +87,20 @@ function WordField({ idx, setFocus, innerRef }) {
         backgroundColor: 'white',
         borderRadius: '5px',
       }}
-      value={text}
-      onChange={(e) => { setText(e.target.value); }}
+      value={answer[idx]}
+      onChange={(e) => {
+        setAnswer(answer.map((val, i) => (i === idx ? e.target.value : val)));
+      }}
       onKeyDown={(e) => {
-        if ((e.code === 'Space' || e.code === 'Enter') && idx < 2) {
+        if ((e.code === 'Space' || e.code === 'Enter')) {
           e.preventDefault();
-          setFocus(idx + 1);
+          if (idx < 2) {
+            setFocus(idx + 1);
+          } else {
+            submitAnswer();
+          }
         }
-        if (e.code === 'Backspace' && text.length === 0 && idx > 0) {
+        if (e.code === 'Backspace' && answer[idx].length === 0 && idx > 0) {
           e.preventDefault();
           setFocus(idx - 1);
         }
@@ -90,6 +113,9 @@ WordField.propTypes = {
   idx: PropTypes.number.isRequired,
   setFocus: PropTypes.func.isRequired,
   innerRef: PropTypes.func.isRequired,
+  answer: PropTypes.arrayOf(PropTypes.string).isRequired,
+  setAnswer: PropTypes.func.isRequired,
+  submitAnswer: PropTypes.func.isRequired,
 };
 
 export default GuessScreen;

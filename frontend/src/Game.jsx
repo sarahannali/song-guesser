@@ -27,7 +27,7 @@ function Game() {
   const [curPlr, setCurPlr] = useState();
 
   const {
-    joinable,
+    joinable = true,
   } = roomState;
 
   // load current player, which is initially null

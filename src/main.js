@@ -1,14 +1,17 @@
 // tip: docs @ https://docs.urturn.app/docs/API/backend#functions
 
 const MoveTypes = Object.freeze({
-  StartGame: 'start_game'
+  StartGame: 'start_game',
+  Guess: 'guess'
 })
 
 function onRoomStart(roomState) {
   const { logger } = roomState;
-  logger.info('Start called')
-  logger.warn('TODO: implement what the state of the room looks like initially')
-  return {}
+  return {
+    state: {
+      rounds: []
+    }
+  }
 }
 
 function onPlayerJoin(player, roomState) {
@@ -25,16 +28,33 @@ function onPlayerQuit(player, roomState) {
   return {}
 }
 
+const NewRound = {
+  song: "dont_stop_believing_clip",
+  player_points: {},
+}
+
 function onPlayerMove(player, move, roomState) {
-  const { logger } = roomState
-  const { type } = move;
+  const { logger, state } = roomState
+  const { type, data } = move;
+  const { rounds } = state;
+
+  const current_round = rounds.length - 1;
 
   switch (type) {
     case MoveTypes.StartGame:
-      return { joinable: false}
+      rounds.push(NewRound);
+      return { joinable: false, state: state }
+    case MoveTypes.Guess:
+      logger.info("DATA: ", data)
+      if (data === "a b c") {
+        rounds[current_round][player.id] = 100;
+      } else {
+
+      }
+    default:
+      return {}
   }
 
-  return {}
 }
 
 // Export these functions so UrTurn runner can run these functions whenever the associated event
