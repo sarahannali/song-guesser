@@ -60,7 +60,7 @@ function PostRoundScreen({
     >
       {Object.keys(playerPoints).map((playerID, idx) => (
         <PlayerResults
-          username={players.find((player) => player.id === playerID).username}
+          username={players.find((player) => player.id === playerID)?.username || ''}
           roundPoints={playerPoints[playerID]}
           totalPoints={totalPoints[playerID]}
           firstPlace={idx === 0}
