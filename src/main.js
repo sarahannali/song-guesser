@@ -13,14 +13,15 @@ const Answer = Object.freeze({
   Stitches: 'no ones ever',
   Firework: 'ignite the light',
   MrBrightside: 'off her dress',
-  You_Belong_With_Me: 'bleachers'
+  You_Belong_With_Me: 'bleachers',
+  Baby: "together"
 })
 
 function onRoomStart(roomState) {
   return {
     state: {
       rounds: [],
-      songs: ["Dont_Stop_Believing", "Stitches", "Firework", "MrBrightside", "You_Belong_With_Me"],
+      songs: ["Dont_Stop_Believing", "Stitches", "Firework", "MrBrightside", "You_Belong_With_Me", "Baby"],
       currentSongIndex: 0,
       totalPoints: {},
     }
@@ -65,7 +66,9 @@ function onPlayerMove(player, move, roomState) {
       return { joinable: false, state: state }
     case MoveTypes.Guess:
       console.log(Answer[songs[currentSongIndex]]);
+      console.log(data.length);
       if (data === Answer[songs[currentSongIndex]]) {
+        console.log();
         rounds[currentRound].playerPoints[player.id] = 100;
         state.totalPoints = rounds.reduce((prev, round) => {
           Object.keys(round.playerPoints).map(plrID => {
@@ -80,7 +83,7 @@ function onPlayerMove(player, move, roomState) {
     case MoveTypes.NewRound:
       if(rounds.length < 10 && currentSongIndex !== songs.length-1){
       state.currentSongIndex += 1;
-      rounds.push(getNewRound(songs, currentSongIndex));
+      rounds.push(getNewRound(songs, state.currentSongIndex));
       return { state: state }
       }else
         {
