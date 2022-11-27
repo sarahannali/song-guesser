@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import client from '@urturn/client';
 // import styles from './Game.module.css';
 // import GuessScreen from './GuessScreen';
+import PropTypes from 'prop-types';
 import PostRoundScreen from './PostRoundScreen';
 import GuessScreen from './GuessScreen';
 import HomeScreen from './HomeScreen';
 
 function Game() {
   const [roomState, setRoomState] = useState(client.getRoomState() || {});
-  console.log('roomState:', roomState);
+  // eslint-disable-next-line no-unused-vars
+  const [postRound, setPostRound] = useState(false);
 
   // setup event listener for updating roomState when client fires
   useEffect(() => {
@@ -41,10 +43,17 @@ function Game() {
     <div>
       {joinable
         ? <HomeScreen />
-        : <GuessScreen /> }
-      <PostRoundScreen />
+        : <InGame postRound={postRound} /> }
     </div>
   );
 }
+
+function InGame({ postRound }) {
+  return postRound ? <PostRoundScreen /> : <GuessScreen />;
+}
+
+InGame.propTypes = {
+  postRound: PropTypes.bool.isRequired,
+};
 
 export default Game;
