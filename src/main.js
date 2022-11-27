@@ -9,15 +9,18 @@ const MoveTypes = Object.freeze({
 });
 
 const Answer = Object.freeze({
-  dont_stop_believing_clip: 'lonely world she',
-  stiches: 'no ones ever'
+  Dont_Stop_Believing: 'lonely world',
+  Stitches: 'no ones ever',
+  Firework: 'ignite the light',
+  MrBrightside: 'off her dress',
+  You_Belong_With_Me: 'bleachers'
 })
 
 function onRoomStart(roomState) {
   return {
     state: {
       rounds: [],
-      songs: ["dont_stop_believing_clip", "stiches"],
+      songs: ["Dont_Stop_Believing", "Stitches", "Firework", "MrBrightside", "You_Belong_With_Me"],
       currentSongIndex: 0,
       totalPoints: {},
     }
@@ -38,10 +41,11 @@ function onPlayerQuit(player, roomState) {
   return {}
 }
 
-function getNewRound(songs, currentSongIndex) {
+function getNewRound(songs, currentSongIndex) { //also return answer length
   return {
-  song: songs[currentSongIndex], //change to state.songs[state.currentSongIndex]
+  song: songs[currentSongIndex], 
   playerPoints: {},
+  answerLength: Answer[songs[currentSongIndex]].split(" ").length
   }
 }
 
@@ -60,7 +64,7 @@ function onPlayerMove(player, move, roomState) {
       state.totalPoints[player.id] = 0;
       return { joinable: false, state: state }
     case MoveTypes.Guess:
-      if (data === Answer[songs[currentSongIndex]]) {
+      if (data.trim() === Answer[songs[currentSongIndex]]) {
         rounds[currentRound].playerPoints[player.id] = 100;
         state.totalPoints = rounds.reduce((prev, round) => {
           Object.keys(round.playerPoints).map(plrID => {
@@ -71,12 +75,17 @@ function onPlayerMove(player, move, roomState) {
 
         return { state: state }
       } else {
-        throw new Error("Wrong answer, try again!");
+        throw new Error("Wrong answer!")
       }
     case MoveTypes.NewRound:
+      if(rounds.length < 10 && currentSongIndex !== songs.length-1){
       state.currentSongIndex += 1;
-      rounds.push(getNewRound(songs, currentSongIndex));
+      rounds.push(getNewRound(songs, state.currentSongIndex));
       return { state: state }
+      }else
+        {
+          return { finished: true }
+        }
     default:
       return {}
   }

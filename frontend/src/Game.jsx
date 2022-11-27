@@ -47,6 +47,8 @@ function Game() {
     setupCurPlr();
   }, []);
 
+  console.log(rounds[currentRound]);
+
   return (
     <div>
       {joinable
@@ -58,6 +60,7 @@ function Game() {
             playerPoints={rounds[currentRound]?.playerPoints || {}}
             playerID={curPlr.id}
             song={songs.length > 0 ? songs[currentSongIndex] : ''}
+            answerLength={rounds[currentRound]?.answerLength || 0}
           />
         ) }
     </div>
@@ -65,19 +68,21 @@ function Game() {
 }
 
 function InGame({
-  finished, totalPoints, playerPoints, playerID, song,
+  finished, totalPoints, playerPoints, playerID, song, answerLength,
 }) {
   return finished || (playerPoints && playerPoints[playerID])
     ? (
       <PostRoundScreen
+        finished={finished}
         totalPoints={totalPoints}
         playerPoints={playerPoints}
       />
     )
-    : <GuessScreen song={song} />;
+    : <GuessScreen song={song} answerLength={answerLength} />;
 }
 
 InGame.propTypes = {
+  answerLength: PropTypes.number.isRequired,
   finished: PropTypes.bool.isRequired,
   totalPoints: PropTypes.objectOf(PropTypes.number).isRequired,
   playerPoints: PropTypes.objectOf(PropTypes.number).isRequired,
