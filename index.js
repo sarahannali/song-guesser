@@ -8,6 +8,11 @@ const MoveTypes = Object.freeze({
   NewRound: 'new_round'
 });
 
+const Answer = Object.freeze({
+  dont_stop_believing_clip: 'lonely world she',
+  stiches: 'no ones ever'
+});
+
 function onRoomStart(roomState) {
   return {
     state: {
@@ -35,7 +40,7 @@ function onPlayerQuit(player, roomState) {
 
 function getNewRound(songs, currentSongIndex) {
   return {
-  song: state.songs[state.currentSongIndex], //change to state.songs[state.currentSongIndex]
+  song: songs[currentSongIndex], //change to state.songs[state.currentSongIndex]
   playerPoints: {},
   }
 }
@@ -50,13 +55,12 @@ function onPlayerMove(player, move, roomState) {
   switch (type) {
     case MoveTypes.StartGame:
       //shuffle songs
-      songs = songs.sort((a, b) => 0.5 - Math.random());
-      rounds.push(getNewRound());
+      state.songs = songs.sort((a, b) => 0.5 - Math.random());
+      rounds.push(getNewRound(songs, currentSongIndex));
       totalPoints[player.id] = 0;
       return { joinable: false, state: state }
     case MoveTypes.Guess:
-      logger.info("DATA: ", data);
-      if (data === "a b c") {
+      if (data === Answer[songs[currentSongIndex]]) {
         rounds[currentRound].playerPoints[player.id] = 100;
         totalPoints[player.id] = Object.keys(rounds).reduce((prev, curr) => {
           Object.keys(curr).map(key => prev[key] += curr[key]);
@@ -66,7 +70,7 @@ function onPlayerMove(player, move, roomState) {
       break;
     case MoveTypes.NewRound:
       state.currentSongIndex += 1;
-      rounds.push(getNewRound());
+      rounds.push(getNewRound(songs, currentSongIndex));
       return { state: state }
     default:
       return {}
