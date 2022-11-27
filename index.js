@@ -13,7 +13,8 @@ function onRoomStart(roomState) {
     state: {
       rounds: [],
       songs: ["dont_stop_believing_clip", "stiches"],
-      currentSongIndex: 0
+      currentSongIndex: 0,
+      totalPoints: {},
     }
   }
 }
@@ -42,7 +43,7 @@ function getNewRound(songs, currentSongIndex) {
 function onPlayerMove(player, move, roomState) {
   const { logger, state } = roomState;
   const { type, data } = move;
-  const { rounds, songs, currentSongIndex } = state;
+  const { rounds, totalPoints, songs, currentSongIndex } = state;
 
   const currentRound = rounds.length - 1;
 
@@ -51,11 +52,15 @@ function onPlayerMove(player, move, roomState) {
       //shuffle songs
       songs = songs.sort((a, b) => 0.5 - Math.random());
       rounds.push(getNewRound());
+      totalPoints[player.id] = 0;
       return { joinable: false, state: state }
     case MoveTypes.Guess:
       logger.info("DATA: ", data);
       if (data === "a b c") {
         rounds[currentRound].playerPoints[player.id] = 100;
+        totalPoints[player.id] = Object.keys(rounds).reduce((prev, curr) => {
+          Object.keys(curr).map(key => prev[key] += curr[key]);
+        }, {});
         return { state: state }
       }
       break;
