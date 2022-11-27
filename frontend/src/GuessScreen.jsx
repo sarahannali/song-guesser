@@ -9,7 +9,8 @@ import useFlash from './Hooks/useFlash';
 import { SHAKE_KEYFRAMES } from './Helpers/constants';
 import Timer from './Helpers/Timer';
 
-const IN_GAME_TIMEOUT_MS = 10000; // 5 minutes
+const START_ROUND_TIMEOUT = 20000;
+const POST_AUDIO_TIMEOUT = 10000;
 
 function GuessScreen({ song, answerLength }) {
   const refs = useRef([]);
@@ -39,11 +40,22 @@ function GuessScreen({ song, answerLength }) {
         overflow: 'hidden',
       }}
     >
+      <Timer
+        startTime={Date.now()}
+        timeoutBufferMs={500}
+        timeoutMs={START_ROUND_TIMEOUT}
+        onTimeout={() => {
+          client.makeMove({ type: 'force_end_round' }).catch(console.log);
+        }}
+        prefix=""
+        suffix=""
+        visible={false}
+      />
       {startTime && (
         <Timer
           startTime={startTime}
           timeoutBufferMs={500}
-          timeoutMs={IN_GAME_TIMEOUT_MS}
+          timeoutMs={POST_AUDIO_TIMEOUT}
           onTimeout={() => {
             client.makeMove({ type: 'force_end_round' }).catch(console.log);
           }}

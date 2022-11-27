@@ -51,7 +51,7 @@ function Game() {
   return (
     <div>
       {joinable
-        ? <HomeScreen />
+        ? <HomeScreen players={players} />
         : (
           <InGame
             finished={finished}
@@ -70,7 +70,7 @@ function Game() {
 function InGame({
   finished, totalPoints, playerPoints, playerID, song, answerLength, players,
 }) {
-  return finished || (playerPoints && playerPoints[playerID])
+  return finished || (playerPoints && playerPoints[playerID] != null)
     ? (
       <PostRoundScreen
         finished={finished}

@@ -20,7 +20,7 @@ function getDisplayTimeLeftSecs(timeLeftSecs) {
 }
 
 function Timer({
-  startTime, onTimeout, prefix, suffix, timeoutBufferMs, timeoutMs,
+  startTime, onTimeout, prefix, suffix, timeoutBufferMs, timeoutMs, visible,
 }) {
   const [timeLeftSecs, setTimeLeftSecs] = useState(getTimeLeftSecs(startTime, timeoutMs));
 
@@ -40,11 +40,13 @@ function Timer({
     };
   }, [startTime]);
 
-  return (
-    <Typography color={timeLeftSecs <= 10 ? 'red' : 'text.primary'}>
-      {`${prefix}${getDisplayTimeLeftSecs(timeLeftSecs)}${suffix}`}
-    </Typography>
-  );
+  return visible
+    ? (
+      <Typography color={timeLeftSecs <= 10 ? 'red' : 'text.primary'}>
+        {`${prefix}${getDisplayTimeLeftSecs(timeLeftSecs)}${suffix}`}
+      </Typography>
+    )
+    : null;
 }
 
 Timer.propTypes = {
@@ -54,10 +56,12 @@ Timer.propTypes = {
   onTimeout: PropTypes.func.isRequired,
   prefix: PropTypes.string.isRequired,
   suffix: PropTypes.string.isRequired,
+  visible: PropTypes.bool,
 };
 
 Timer.defaultProps = {
   timeoutBufferMs: 0,
+  visible: true,
 };
 
 export default Timer;
