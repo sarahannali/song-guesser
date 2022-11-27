@@ -1,10 +1,14 @@
-import { useState, useEffect } from 'react'
-import client from '@urturn/client'
-import styles from './Game.module.css';
+import React, { useState, useEffect } from 'react';
+import client from '@urturn/client';
+// import styles from './Game.module.css';
+// import GuessScreen from './GuessScreen';
+import PostRoundScreen from './PostRoundScreen';
+import GuessScreen from './GuessScreen';
+import HomeScreen from './HomeScreen';
 
 function Game() {
   const [roomState, setRoomState] = useState(client.getRoomState() || {});
-  console.log("roomState:", roomState)
+  console.log('roomState:', roomState);
 
   // setup event listener for updating roomState when client fires
   useEffect(() => {
@@ -17,8 +21,12 @@ function Game() {
     };
   }, []);
 
+  // eslint-disable-next-line no-unused-vars
   const [curPlr, setCurPlr] = useState();
-  console.log("curPlr:", curPlr)
+
+  const {
+    joinable,
+  } = roomState;
 
   // load current player, which is initially null
   useEffect(() => {
@@ -31,12 +39,10 @@ function Game() {
 
   return (
     <div>
-      <h1 className={styles['game-title']}>TODO: Implement your game UI here!</h1>
-      <p className={styles.description}>Current Plr: {curPlr?.username}</p>
-      <audio controls>
-        <source src="songs/dont_stop_believing_clip.mp3" type="audio/mpeg" />
-        Your browser does not support the audio element.
-      </audio>
+      {joinable
+        ? <HomeScreen />
+        : <GuessScreen /> }
+      <PostRoundScreen />
     </div>
   );
 }

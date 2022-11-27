@@ -1,5 +1,9 @@
 // tip: docs @ https://docs.urturn.app/docs/API/backend#functions
 
+const MoveTypes = Object.freeze({
+  StartGame: 'start_game'
+})
+
 function onRoomStart(roomState) {
   const { logger } = roomState;
   logger.info('Start called')
@@ -23,8 +27,13 @@ function onPlayerQuit(player, roomState) {
 
 function onPlayerMove(player, move, roomState) {
   const { logger } = roomState
-  logger.info('Move called with:', { player, move, roomState })
-  logger.warn('TODO: implement how to change the roomState when any player makes a move')
+  const { type } = move;
+
+  switch (type) {
+    case MoveTypes.StartGame:
+      return { joinable: false}
+  }
+
   return {}
 }
 
