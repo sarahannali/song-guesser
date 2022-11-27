@@ -64,8 +64,7 @@ function onPlayerMove(player, move, roomState) {
       state.totalPoints[player.id] = 0;
       return { joinable: false, state: state }
     case MoveTypes.Guess:
-      console.log(Answer[songs[currentSongIndex]]);
-      if (data === Answer[songs[currentSongIndex]]) {
+      if (data.trim() === Answer[songs[currentSongIndex]]) {
         rounds[currentRound].playerPoints[player.id] = 100;
         state.totalPoints = rounds.reduce((prev, round) => {
           Object.keys(round.playerPoints).map(plrID => {
@@ -73,14 +72,15 @@ function onPlayerMove(player, move, roomState) {
           });
           return prev;
         }, {});
-        
+
         return { state: state }
+      } else {
+        throw new Error("Wrong answer!")
       }
-      break;
     case MoveTypes.NewRound:
       if(rounds.length < 10 && currentSongIndex !== songs.length-1){
       state.currentSongIndex += 1;
-      rounds.push(getNewRound(songs, currentSongIndex));
+      rounds.push(getNewRound(songs, state.currentSongIndex));
       return { state: state }
       }else
         {
