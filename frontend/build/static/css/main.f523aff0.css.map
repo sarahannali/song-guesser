@@ -1,1 +1,0 @@
-{"version":3,"file":"static/css/main.f523aff0.css","mappings":"AAKA,iDAEE,UAAY,CADZ,iBAEF","sources":["Game.module.css"],"sourcesContent":[".game-title {\n  text-align: center;\n  color: white;\n}\n\n.description {\n  text-align: center;\n  color: white;\n}\n"],"names":[],"sourceRoot":""}

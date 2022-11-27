@@ -2,11 +2,20 @@
 
 // tip: docs @ https://docs.urturn.app/docs/API/backend#functions
 
+const MoveTypes = Object.freeze({
+  StartGame: 'start_game',
+  Guess: 'guess',
+  NewRound: 'new_round'
+});
+
 function onRoomStart(roomState) {
-  const { logger } = roomState;
-  logger.info('Start called');
-  logger.warn('TODO: implement what the state of the room looks like initially');
-  return {}
+  return {
+    state: {
+      rounds: [],
+      songs: ["dont_stop_believing_clip"],
+      currentSongIndex: 0
+    }
+  }
 }
 
 function onPlayerJoin(player, roomState) {
@@ -23,11 +32,40 @@ function onPlayerQuit(player, roomState) {
   return {}
 }
 
+function getNewRound(songs, currentSongIndex) {
+  return {
+  song: "dont_stop_believing_clip", //change to state.songs[state.currentSongIndex]
+  playerPoints: {},
+  }
+}
+
 function onPlayerMove(player, move, roomState) {
-  const { logger } = roomState;
-  logger.info('Move called with:', { player, move, roomState });
-  logger.warn('TODO: implement how to change the roomState when any player makes a move');
-  return {}
+  const { logger, state } = roomState;
+  const { type, data } = move;
+  const { rounds, songs, currentSongIndex } = state;
+
+  const currentRound = rounds.length - 1;
+
+  switch (type) {
+    case MoveTypes.StartGame:
+      //shuffle songs
+      rounds.push(getNewRound());
+      return { joinable: false, state: state }
+    case MoveTypes.Guess:
+      logger.info("DATA: ", data);
+      if (data === "a b c") {
+        rounds[currentRound].playerPoints[player.id] = 100;
+        return { state: state }
+      }
+      break;
+    case MoveTypes.NewRound:
+      state.currentSongIndex += 1;
+      rounds.push(getNewRound());
+      return { state: state }
+    default:
+      return {}
+  }
+
 }
 
 // Export these functions so UrTurn runner can run these functions whenever the associated event
