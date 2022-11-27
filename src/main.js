@@ -2,7 +2,8 @@
 
 const MoveTypes = Object.freeze({
   StartGame: 'start_game',
-  Guess: 'guess'
+  Guess: 'guess',
+  NewRound: 'new_round'
 })
 
 function onRoomStart(roomState) {
@@ -52,6 +53,10 @@ function onPlayerMove(player, move, roomState) {
       } else {
 
       }
+      break;
+    case MoveTypes.NewRound:
+      rounds.push(NewRound);
+      return { state: state }
     default:
       return {}
   }

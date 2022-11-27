@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
-import { Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
+import client from '@urturn/client';
 
 function PlayerResults({ firstPlace }) {
   return (
@@ -52,6 +53,13 @@ function PostRoundScreen() {
       <PlayerResults firstPlace />
       <PlayerResults />
       <PlayerResults />
+      <Button
+        variant="contained"
+        size="large"
+        onClick={() => client.makeMove({ type: 'new_round' })}
+      >
+        NEXT ROUND
+      </Button>
     </Stack>
   );
 }
