@@ -13,14 +13,15 @@ const Answer = Object.freeze({
   Stitches: 'no ones ever',
   Firework: 'ignite the light',
   MrBrightside: 'off her dress',
-  You_Belong_With_Me: 'bleachers'
+  You_Belong_With_Me: 'bleachers',
+  Baby: "together"
 })
 
 function onRoomStart(roomState) {
   return {
     state: {
       rounds: [],
-      songs: ["Dont_Stop_Believing", "Stitches", "Firework", "MrBrightside", "You_Belong_With_Me"],
+      songs: ["Dont_Stop_Believing", "Stitches", "Firework", "MrBrightside", "You_Belong_With_Me", "Baby"],
       currentSongIndex: 0,
       totalPoints: {},
     }
