@@ -6,7 +6,7 @@ import { Grid, TextField, useMediaQuery } from '@mui/material';
 import PropTypes from 'prop-types';
 import client from '@urturn/client';
 
-function GuessScreen() {
+function GuessScreen({ song }) {
   const refs = useRef([]);
   const [answer, setAnswer] = useState(['', '', '']);
 
@@ -60,7 +60,7 @@ function GuessScreen() {
         </Grid>
       </Grid>
       <audio controls autoPlay>
-        <source src="songs/dont_stop_believing_clip.mp3" type="audio/mpeg" />
+        <source src={`songs/${song}.mp3`} type="audio/mpeg" />
         Your browser does not support the audio element.
       </audio>
     </Stack>
@@ -107,7 +107,9 @@ function WordField({
     />
   );
 }
-
+GuessScreen.propTypes = {
+  song: PropTypes.string.isRequired,
+};
 WordField.propTypes = {
   idx: PropTypes.number.isRequired,
   setFocus: PropTypes.func.isRequired,

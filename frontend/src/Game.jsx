@@ -30,6 +30,8 @@ function Game() {
   } = roomState;
   const {
     rounds = [],
+    songs = [],
+    currentSongIndex = 0,
   } = state;
 
   const currentRound = rounds.length - 1;
@@ -51,22 +53,24 @@ function Game() {
           <InGame
             playerPoints={rounds[currentRound]?.playerPoints || {}}
             playerID={curPlr.id}
+            song={songs.length > 0 ? songs[currentSongIndex] : ''}
           />
         ) }
     </div>
   );
 }
 
-function InGame({ playerPoints, playerID }) {
+function InGame({ playerPoints, playerID, song }) {
   console.log('PLAYER POINTS: ', playerPoints);
   return playerPoints && playerPoints[playerID]
     ? <PostRoundScreen playerPoints={playerPoints} />
-    : <GuessScreen />;
+    : <GuessScreen song={song} />;
 }
 
 InGame.propTypes = {
   playerPoints: PropTypes.objectOf(PropTypes.number).isRequired,
   playerID: PropTypes.string.isRequired,
+  song: PropTypes.string.isRequired,
 };
 
 export default Game;
