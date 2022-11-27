@@ -68,10 +68,11 @@ function onPlayerMove(player, move, roomState) {
           });
           return prev;
         }, {});
-        
+
         return { state: state }
+      } else {
+        throw new Error("Wrong answer, try again!");
       }
-      break;
     case MoveTypes.NewRound:
       state.currentSongIndex += 1;
       rounds.push(getNewRound(songs, currentSongIndex));

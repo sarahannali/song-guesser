@@ -9,9 +9,17 @@ import client from '@urturn/client';
 function GuessScreen({ song }) {
   const refs = useRef([]);
   const [answer, setAnswer] = useState(['', '', '']);
+  const [error, setError] = useState(false);
 
   const setFocus = (idx) => refs.current[idx].focus();
-  const submitAnswer = () => client.makeMove({ type: 'guess', data: answer.join(' ') });
+  const submitAnswer = () => {
+    try {
+      client.makeMove({ type: 'guess', data: answer.join(' ') });
+    } catch (e) {
+      console.log('ERROR: ', e);
+      setError(true);
+    }
+  };
 
   return (
     <Stack
@@ -36,6 +44,7 @@ function GuessScreen({ song }) {
             submitAnswer={submitAnswer}
             setAnswer={setAnswer}
             innerRef={(el) => { refs.current[0] = el; }}
+            sx={{ backgroundColor: error ? 'red' : 'white' }}
           />
         </Grid>
         <Grid item>
