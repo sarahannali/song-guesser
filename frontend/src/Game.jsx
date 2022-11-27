@@ -32,6 +32,7 @@ function Game() {
     rounds = [],
     songs = [],
     currentSongIndex = 0,
+    totalPoints = {},
   } = state;
 
   const currentRound = rounds.length - 1;
@@ -51,6 +52,7 @@ function Game() {
         ? <HomeScreen />
         : (
           <InGame
+            totalPoints={totalPoints}
             playerPoints={rounds[currentRound]?.playerPoints || {}}
             playerID={curPlr.id}
             song={songs.length > 0 ? songs[currentSongIndex] : ''}
@@ -60,14 +62,22 @@ function Game() {
   );
 }
 
-function InGame({ playerPoints, playerID, song }) {
+function InGame({
+  totalPoints, playerPoints, playerID, song,
+}) {
   console.log('PLAYER POINTS: ', playerPoints);
   return playerPoints && playerPoints[playerID]
-    ? <PostRoundScreen playerPoints={playerPoints} />
+    ? (
+      <PostRoundScreen
+        totalPoints={totalPoints}
+        playerPoints={playerPoints}
+      />
+    )
     : <GuessScreen song={song} />;
 }
 
 InGame.propTypes = {
+  totalPoints: PropTypes.objectOf(PropTypes.number).isRequired,
   playerPoints: PropTypes.objectOf(PropTypes.number).isRequired,
   playerID: PropTypes.string.isRequired,
   song: PropTypes.string.isRequired,

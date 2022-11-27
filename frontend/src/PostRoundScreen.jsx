@@ -5,7 +5,9 @@ import Box from '@mui/material/Box';
 import { Button, Typography } from '@mui/material';
 import client from '@urturn/client';
 
-function PlayerResults({ username, points, firstPlace }) {
+function PlayerResults({
+  username, totalPoints, roundPoints, firstPlace,
+}) {
   return (
     <Stack
       spacing={2}
@@ -25,7 +27,7 @@ function PlayerResults({ username, points, firstPlace }) {
       >
         <Stack direction="row" justifyContent="space-between">
           <Typography variant="h5">{username}</Typography>
-          <Typography variant="h5">{points}</Typography>
+          <Typography variant="h5">{totalPoints}</Typography>
         </Stack>
       </Box>
       <Box
@@ -35,15 +37,14 @@ function PlayerResults({ username, points, firstPlace }) {
       >
         <Typography variant="h5">
           +
-          {points}
+          {roundPoints}
         </Typography>
       </Box>
     </Stack>
   );
 }
 
-function PostRoundScreen({ playerPoints }) {
-  console.log('2: ', playerPoints);
+function PostRoundScreen({ totalPoints, playerPoints }) {
   return (
     <Stack
       spacing={2}
@@ -57,7 +58,8 @@ function PostRoundScreen({ playerPoints }) {
       {Object.keys(playerPoints).map((playerID, idx) => (
         <PlayerResults
           username={playerID}
-          points={playerPoints[playerID]}
+          roundPoints={playerPoints[playerID]}
+          totalPoints={totalPoints[playerID]}
           firstPlace={idx === 0}
         />
       ))}
@@ -73,12 +75,14 @@ function PostRoundScreen({ playerPoints }) {
 }
 
 PostRoundScreen.propTypes = {
+  totalPoints: PropTypes.objectOf(PropTypes.number).isRequired,
   playerPoints: PropTypes.objectOf(PropTypes.number).isRequired,
 };
 
 PlayerResults.propTypes = {
   username: PropTypes.string.isRequired,
-  points: PropTypes.number.isRequired,
+  totalPoints: PropTypes.number.isRequired,
+  roundPoints: PropTypes.number.isRequired,
   firstPlace: PropTypes.bool,
 };
 
