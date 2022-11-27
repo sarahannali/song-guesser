@@ -50,7 +50,7 @@ function getNewRound(songs, currentSongIndex) {
 function onPlayerMove(player, move, roomState) {
   const { logger, state } = roomState;
   const { type, data } = move;
-  const { rounds, totalPoints, songs, currentSongIndex } = state;
+  const { rounds, songs, currentSongIndex } = state;
 
   const currentRound = rounds.length - 1;
 
@@ -59,14 +59,18 @@ function onPlayerMove(player, move, roomState) {
       //shuffle songs
       state.songs = songs.sort((a, b) => 0.5 - Math.random());
       rounds.push(getNewRound(songs, currentSongIndex));
-      totalPoints[player.id] = 0;
+      state.totalPoints[player.id] = 0;
       return { joinable: false, state: state }
     case MoveTypes.Guess:
       if (data === Answer[songs[currentSongIndex]]) {
         rounds[currentRound].playerPoints[player.id] = 100;
-        totalPoints[player.id] = Object.keys(rounds).reduce((prev, curr) => {
-          Object.keys(curr).map(key => prev[key] += curr[key]);
+        state.totalPoints = rounds.reduce((prev, round) => {
+          Object.keys(round.playerPoints).map(plrID => {
+            prev[plrID] != null ? prev[plrID] += round.playerPoints[plrID] : prev[plrID] = round.playerPoints[plrID]
+          });
+          return prev;
         }, {});
+        
         return { state: state }
       }
       break;

@@ -27,11 +27,13 @@ function Game() {
   const {
     joinable = true,
     state = {},
+    finished = false,
   } = roomState;
   const {
     rounds = [],
     songs = [],
     currentSongIndex = 0,
+    totalPoints = {},
   } = state;
 
   const currentRound = rounds.length - 1;
@@ -51,6 +53,8 @@ function Game() {
         ? <HomeScreen />
         : (
           <InGame
+            finished={finished}
+            totalPoints={totalPoints}
             playerPoints={rounds[currentRound]?.playerPoints || {}}
             playerID={curPlr.id}
             song={songs.length > 0 ? songs[currentSongIndex] : ''}
@@ -60,14 +64,22 @@ function Game() {
   );
 }
 
-function InGame({ playerPoints, playerID, song }) {
-  console.log('PLAYER POINTS: ', playerPoints);
-  return playerPoints && playerPoints[playerID]
-    ? <PostRoundScreen playerPoints={playerPoints} />
+function InGame({
+  finished, totalPoints, playerPoints, playerID, song,
+}) {
+  return finished || (playerPoints && playerPoints[playerID])
+    ? (
+      <PostRoundScreen
+        totalPoints={totalPoints}
+        playerPoints={playerPoints}
+      />
+    )
     : <GuessScreen song={song} />;
 }
 
 InGame.propTypes = {
+  finished: PropTypes.bool.isRequired,
+  totalPoints: PropTypes.objectOf(PropTypes.number).isRequired,
   playerPoints: PropTypes.objectOf(PropTypes.number).isRequired,
   playerID: PropTypes.string.isRequired,
   song: PropTypes.string.isRequired,
