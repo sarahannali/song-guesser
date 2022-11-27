@@ -41,10 +41,11 @@ function onPlayerQuit(player, roomState) {
   return {}
 }
 
-function getNewRound(songs, currentSongIndex) {
+function getNewRound(songs, currentSongIndex) { //also return answer length
   return {
-  song: songs[currentSongIndex], //change to state.songs[state.currentSongIndex]
+  song: songs[currentSongIndex], 
   playerPoints: {},
+  answerLength: Answer[songs[currentSongIndex]].split(" ").length
   }
 }
 
@@ -63,6 +64,7 @@ function onPlayerMove(player, move, roomState) {
       state.totalPoints[player.id] = 0;
       return { joinable: false, state: state }
     case MoveTypes.Guess:
+      console.log(Answer[songs[currentSongIndex]]);
       if (data === Answer[songs[currentSongIndex]]) {
         rounds[currentRound].playerPoints[player.id] = 100;
         state.totalPoints = rounds.reduce((prev, round) => {

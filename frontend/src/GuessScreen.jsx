@@ -6,12 +6,14 @@ import { Grid, TextField, useMediaQuery } from '@mui/material';
 import PropTypes from 'prop-types';
 import client from '@urturn/client';
 
-function GuessScreen({ song }) {
+function GuessScreen({ song, answerLength }) {
   const refs = useRef([]);
   const [answer, setAnswer] = useState(['', '', '']);
 
   const setFocus = (idx) => refs.current[idx].focus();
   const submitAnswer = () => client.makeMove({ type: 'guess', data: answer.join(' ') });
+
+  console.log(answerLength);
 
   return (
     <Stack
@@ -28,36 +30,23 @@ function GuessScreen({ song }) {
         container
         justifyContent="center"
       >
-        <Grid item>
-          <WordField
-            idx={0}
-            setFocus={setFocus}
-            answer={answer}
-            submitAnswer={submitAnswer}
-            setAnswer={setAnswer}
-            innerRef={(el) => { refs.current[0] = el; }}
-          />
-        </Grid>
-        <Grid item>
-          <WordField
-            idx={1}
-            setFocus={setFocus}
-            answer={answer}
-            submitAnswer={submitAnswer}
-            setAnswer={setAnswer}
-            innerRef={(el) => { refs.current[1] = el; }}
-          />
-        </Grid>
-        <Grid item>
-          <WordField
-            idx={2}
-            setFocus={setFocus}
-            answer={answer}
-            submitAnswer={submitAnswer}
-            setAnswer={setAnswer}
-            innerRef={(el) => { refs.current[2] = el; }}
-          />
-        </Grid>
+        {// use .map to make same number of word fields as answer length
+        }
+
+        {[...Array(answerLength).keys()].map((i) => (
+          <Grid item>
+            <WordField
+              idx={i}
+              setFocus={setFocus}
+              answer={answer}
+              submitAnswer={submitAnswer}
+              setAnswer={setAnswer}
+              innerRef={(el) => { refs.current[i] = el; }}
+              answerLength={answerLength - 1}
+            />
+          </Grid>
+        ))}
+
       </Grid>
       <audio controls autoPlay>
         <source src={`songs/${song}.mp3`} type="audio/mpeg" />
@@ -74,6 +63,7 @@ function WordField({
   answer,
   setAnswer,
   submitAnswer,
+  answerLength,
 }) {
   return (
     <TextField
@@ -93,7 +83,7 @@ function WordField({
       onKeyDown={(e) => {
         if ((e.code === 'Space' || e.code === 'Enter')) {
           e.preventDefault();
-          if (idx < 2) {
+          if (idx < answerLength) {
             setFocus(idx + 1);
           } else {
             submitAnswer();
@@ -109,6 +99,7 @@ function WordField({
 }
 GuessScreen.propTypes = {
   song: PropTypes.string.isRequired,
+  answerLength: PropTypes.number.isRequired,
 };
 WordField.propTypes = {
   idx: PropTypes.number.isRequired,
@@ -117,6 +108,7 @@ WordField.propTypes = {
   answer: PropTypes.arrayOf(PropTypes.string).isRequired,
   setAnswer: PropTypes.func.isRequired,
   submitAnswer: PropTypes.func.isRequired,
+  answerLength: PropTypes.number.isRequired,
 };
 
 export default GuessScreen;
