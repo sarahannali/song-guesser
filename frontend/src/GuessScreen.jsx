@@ -5,20 +5,22 @@ import Stack from '@mui/material/Stack';
 import { Grid, TextField, useMediaQuery } from '@mui/material';
 import PropTypes from 'prop-types';
 import client from '@urturn/client';
+import useFlash from './Hooks/useFlash';
+import { SHAKE_KEYFRAMES } from './Helpers/constants';
 
 function GuessScreen({ song, answerLength }) {
   const refs = useRef([]);
-  const [answer, setAnswer] = useState(['', '', '']);
-  // eslint-disable-next-line no-unused-vars
-  const [answerError, setError] = useState(false);
+  const [answer, setAnswer] = useState(Array(answerLength).fill(''));
+  const { flash, flashing } = useFlash();
 
   const setFocus = (idx) => refs.current[idx].focus();
   const submitAnswer = async () => {
     const { error } = await client.makeMove({ type: 'guess', data: answer.join(' ') });
     console.log(error);
     if (error) {
-      setError(true);
-      // setTimeout(setError(false), 500);
+      setAnswer(Array(answerLength).fill(''));
+      refs.current[0].focus();
+      flash();
     }
   };
 
@@ -32,12 +34,17 @@ function GuessScreen({ song, answerLength }) {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        overflow: 'hidden',
       }}
     >
       <Grid
         spacing={1}
         container
         justifyContent="center"
+        sx={{
+          animation: flashing ? 'shake 1s linear infinite' : 'none',
+          '@keyframes shake': SHAKE_KEYFRAMES,
+        }}
       >
         {[...Array(answerLength).keys()].map((i) => (
           <Grid item>
@@ -49,7 +56,7 @@ function GuessScreen({ song, answerLength }) {
               setAnswer={setAnswer}
               innerRef={(el) => { refs.current[i] = el; }}
               answerLength={answerLength - 1}
-              error={answerError}
+              error={flashing}
             />
           </Grid>
         ))}
