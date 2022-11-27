@@ -42,7 +42,7 @@ function GuessScreen({ song, answerLength }) {
         container
         justifyContent="center"
         sx={{
-          animation: flashing ? 'shake 1s linear infinite' : 'none',
+          animation: flashing ? 'shake .5s linear infinite' : 'none',
           '@keyframes shake': SHAKE_KEYFRAMES,
         }}
       >
