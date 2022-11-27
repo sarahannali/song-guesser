@@ -9,9 +9,18 @@ import client from '@urturn/client';
 function GuessScreen({ song, answerLength }) {
   const refs = useRef([]);
   const [answer, setAnswer] = useState(['', '', '']);
+  // eslint-disable-next-line no-unused-vars
+  const [answerError, setError] = useState(false);
 
   const setFocus = (idx) => refs.current[idx].focus();
-  const submitAnswer = () => client.makeMove({ type: 'guess', data: answer.join(' ') });
+  const submitAnswer = async () => {
+    const { error } = await client.makeMove({ type: 'guess', data: answer.join(' ') });
+    console.log(error);
+    if (error) {
+      setError(true);
+      // setTimeout(setError(false), 500);
+    }
+  };
 
   console.log(answerLength);
 
@@ -30,9 +39,6 @@ function GuessScreen({ song, answerLength }) {
         container
         justifyContent="center"
       >
-        {// use .map to make same number of word fields as answer length
-        }
-
         {[...Array(answerLength).keys()].map((i) => (
           <Grid item>
             <WordField
@@ -43,6 +49,7 @@ function GuessScreen({ song, answerLength }) {
               setAnswer={setAnswer}
               innerRef={(el) => { refs.current[i] = el; }}
               answerLength={answerLength - 1}
+              error={answerError}
             />
           </Grid>
         ))}
@@ -64,6 +71,7 @@ function WordField({
   setAnswer,
   submitAnswer,
   answerLength,
+  error,
 }) {
   return (
     <TextField
@@ -73,7 +81,7 @@ function WordField({
       autoComplete="off"
       inputProps={{ style: { fontSize: useMediaQuery('(max-width:600px)') ? '1.5em' : '2rem' } }}
       sx={{
-        backgroundColor: 'white',
+        backgroundColor: error ? '#ff9292' : 'white',
         borderRadius: '5px',
       }}
       value={answer[idx]}
@@ -109,6 +117,7 @@ WordField.propTypes = {
   setAnswer: PropTypes.func.isRequired,
   submitAnswer: PropTypes.func.isRequired,
   answerLength: PropTypes.number.isRequired,
+  error: PropTypes.bool.isRequired,
 };
 
 export default GuessScreen;
