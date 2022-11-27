@@ -11,7 +11,7 @@ function onRoomStart(roomState) {
   return {
     state: {
       rounds: [],
-      songs: ["dont_stop_believing_clip"],
+      songs: ["dont_stop_believing_clip", "stiches"],
       currentSongIndex: 0
     }
   }
@@ -39,7 +39,7 @@ function getNextSong(){
 
 function getNewRound(songs, currentSongIndex) {
   return {
-  song: "dont_stop_believing_clip", //change to state.songs[state.currentSongIndex]
+  song: state.songs[state.currentSongIndex], //change to state.songs[state.currentSongIndex]
   playerPoints: {},
   }
 }
@@ -54,6 +54,7 @@ function onPlayerMove(player, move, roomState) {
   switch (type) {
     case MoveTypes.StartGame:
       //shuffle songs
+      songs = songs.sort((a, b) => 0.5 - Math.random());
       rounds.push(getNewRound(songs, currentSongIndex));
       return { joinable: false, state: state }
     case MoveTypes.Guess:
