@@ -20,7 +20,6 @@ function HomeScreen({ players }) {
       <Typography
         sx={{
           fontSize: '2em',
-          color: 'white',
           fontFamily: 'Bungee',
         }}
       >

@@ -5,7 +5,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import Stack from '@mui/material/Stack';
 import {
   Box,
-  Grid, TextField, Typography, useMediaQuery,
+  Button,
+  Grid, IconButton, TextField, Typography, useMediaQuery,
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import client from '@urturn/client';
@@ -32,7 +33,7 @@ function GuessScreen({ song, answerLength }) {
   const refs = useRef([]);
   const audioRef = useRef();
   const [answer, setAnswer] = useState(Array(answerLength).fill(''));
-  const [startTime, setStartTime] = useState(Date.now());
+  const [startTime, setStartTime] = useState(null);
   const { flash, flashing } = useFlash();
 
   const setFocus = (idx) => refs.current[idx].focus();
@@ -59,17 +60,17 @@ function GuessScreen({ song, answerLength }) {
         overflow: 'hidden',
       }}
     >
-      {/* <Timer
+      <Timer
         startTime={Date.now()}
         timeoutBufferMs={500}
         timeoutMs={START_ROUND_TIMEOUT}
-        onTimeout={() => {
-          client.makeMove({ type: 'force_end_round' }).catch(console.log);
-        }}
+        // onTimeout={() => {
+        //   client.makeMove({ type: 'force_end_round' }).catch(console.log);
+        // }}
         prefix=""
         suffix=""
         visible={false}
-      /> */}
+      />
       {startTime && (
         <Box sx={{
           position: 'absolute',
@@ -81,9 +82,9 @@ function GuessScreen({ song, answerLength }) {
             startTime={startTime}
             timeoutBufferMs={500}
             timeoutMs={POST_AUDIO_TIMEOUT}
-          // onTimeout={() => {
-          //   client.makeMove({ type: 'force_end_round' }).catch(console.log);
-          // }}
+            // onTimeout={() => {
+            //   client.makeMove({ type: 'force_end_round' }).catch(console.log);
+            // }}
             prefix=""
             suffix=""
           />
@@ -94,11 +95,9 @@ function GuessScreen({ song, answerLength }) {
         fontFamily="Bungee"
         fontSize=".8em"
       >
-        WHAT ARE THE NEXT
-        {' '}
-        {NUMBER_TO_WORDS[answerLength]}
-        {' '}
-        WORDS?
+        {answerLength === 1
+          ? 'WHAT IS THE NEXT WORD?'
+          : `WHAT ARE THE NEXT ${NUMBER_TO_WORDS[answerLength]} WORDS?`}
       </Typography>
       <Grid
         spacing={1}
@@ -125,6 +124,17 @@ function GuessScreen({ song, answerLength }) {
         ))}
 
       </Grid>
+      <Button
+        variant="contained"
+        sx={{
+          fontFamily: 'Bungee',
+          color: 'white',
+          borderRadius: '0px',
+        }}
+      >
+        SUBMIT
+
+      </Button>
       <audio
         controls
         autoPlay
@@ -134,7 +144,27 @@ function GuessScreen({ song, answerLength }) {
         <source src={`songs/${song}.mp3`} type="audio/mpeg" />
         Your browser does not support the audio element.
       </audio>
+      <PlayButton audioRef={audioRef} />
     </Stack>
+  );
+}
+
+function PlayButton({ audioRef }) {
+  const [playing, setPlaying] = useState(false);
+
+  return (
+    <IconButton
+      onClick={() => {
+        if (playing) {
+          audioRef.current.pause();
+        } else {
+          audioRef.current.play();
+        }
+        setPlaying(!playing);
+      }}
+    >
+      {playing ? 'PAUSE' : 'PLAY'}
+    </IconButton>
   );
 }
 
@@ -157,7 +187,6 @@ function WordField({
       inputProps={{ style: { fontSize: useMediaQuery('(max-width:600px)') ? '1.5em' : '2rem' } }}
       sx={{
         backgroundColor: error ? '#ff9292' : 'white',
-        borderRadius: '5px',
       }}
       value={answer[idx]}
       onChange={(e) => {
@@ -184,6 +213,15 @@ function WordField({
 GuessScreen.propTypes = {
   song: PropTypes.string.isRequired,
   answerLength: PropTypes.number.isRequired,
+};
+
+PlayButton.propTypes = {
+  audioRef: PropTypes.oneOfType([
+    // Either a function
+    PropTypes.func,
+    // Or the instance of a DOM native element (see the note about SSR)
+    PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
+  ]).isRequired,
 };
 
 WordField.propTypes = {
