@@ -61,6 +61,7 @@ function Game() {
             song={songs.length > 0 ? songs[currentSongIndex] : ''}
             answerLength={rounds[currentRound]?.answerLength || 0}
             players={players}
+            guesses={rounds[currentRound]?.guesses || []}
           />
         ) }
     </div>
@@ -69,6 +70,7 @@ function Game() {
 
 function InGame({
   finished, totalPoints, playerPoints, playerID, song, answerLength, players,
+  guesses,
 }) {
   return finished || (playerPoints && playerPoints[playerID] != null)
     ? (
@@ -77,6 +79,7 @@ function InGame({
         totalPoints={totalPoints}
         playerPoints={playerPoints}
         players={players}
+        guesses={guesses}
       />
     )
     : <GuessScreen song={song} answerLength={answerLength} />;
@@ -92,6 +95,10 @@ InGame.propTypes = {
   playerPoints: PropTypes.objectOf(PropTypes.number).isRequired,
   playerID: PropTypes.string.isRequired,
   song: PropTypes.string.isRequired,
+  guesses: PropTypes.arrayOf(PropTypes.objectOf({
+    user: PropTypes.string,
+    guess: PropTypes.string,
+  })).isRequired,
 };
 
 export default Game;

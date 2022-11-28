@@ -24,13 +24,11 @@ function GuessScreen({ song, answerLength }) {
 
   const setFocus = (idx) => refs.current[idx].focus();
   const submitAnswer = async () => {
-    const { error } = await client.makeMove({ type: 'guess', data: answer.join(' ') });
-    console.log(error);
-    if (error) {
-      setAnswer(Array(answerLength).fill(''));
-      refs.current[0].focus();
-      flash();
-    }
+    await client.makeMove({ type: 'guess', data: answer.join(' ') });
+
+    setAnswer(Array(answerLength).fill(''));
+    refs.current[0].focus();
+    flash();
   };
 
   useEffect(() => {

@@ -41,7 +41,7 @@ function PlayerResults({
 }
 
 function PostRoundScreen({
-  totalPoints, playerPoints, finished, players,
+  totalPoints, playerPoints, finished, players, guesses,
 }) {
   const waitingForPlayers = Object.keys(playerPoints).length !== players.length;
   return (
@@ -75,13 +75,30 @@ function PostRoundScreen({
         {waitingForPlayers ? 'WAITING FOR PLAYERS...' : 'NEXT ROUND'}
       </Button>
       )}
+      <OtherPlayerViews guesses={guesses} />
     </Stack>
+  );
+}
+
+function OtherPlayerViews({ guesses }) {
+  const lastGuess = guesses[guesses.length - 1];
+  return (
+    <Typography color="white">
+      {lastGuess.user}
+      :
+      {' '}
+      {lastGuess.guess}
+    </Typography>
   );
 }
 
 PostRoundScreen.propTypes = {
   players: PropTypes.arrayOf(PropTypes.objectOf({
     username: PropTypes.string,
+  })).isRequired,
+  guesses: PropTypes.arrayOf(PropTypes.objectOf({
+    user: PropTypes.string,
+    guess: PropTypes.string,
   })).isRequired,
   finished: PropTypes.bool.isRequired,
   totalPoints: PropTypes.objectOf(PropTypes.number).isRequired,
@@ -97,6 +114,13 @@ PlayerResults.propTypes = {
 
 PlayerResults.defaultProps = {
   firstPlace: false,
+};
+
+OtherPlayerViews.propTypes = {
+  guesses: PropTypes.arrayOf(PropTypes.objectOf({
+    user: PropTypes.string,
+    guess: PropTypes.string,
+  })).isRequired,
 };
 
 export default PostRoundScreen;
