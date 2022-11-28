@@ -1,8 +1,11 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-no-duplicate-props */
 /* eslint-disable jsx-a11y/media-has-caption */
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Stack from '@mui/material/Stack';
-import { Grid, TextField, useMediaQuery } from '@mui/material';
+import {
+  Grid, TextField, Typography, useMediaQuery,
+} from '@mui/material';
 import PropTypes from 'prop-types';
 import client from '@urturn/client';
 import useFlash from './Hooks/useFlash';
@@ -14,6 +17,7 @@ const POST_AUDIO_TIMEOUT = 10000;
 
 function GuessScreen({ song, answerLength }) {
   const refs = useRef([]);
+  const audioRef = useRef();
   const [answer, setAnswer] = useState(Array(answerLength).fill(''));
   const [startTime, setStartTime] = useState(null);
   const { flash, flashing } = useFlash();
@@ -29,6 +33,10 @@ function GuessScreen({ song, answerLength }) {
     }
   };
 
+  useEffect(() => {
+    audioRef.current.volume = 0.4;
+  }, []);
+
   return (
     <Stack
       spacing={2}
@@ -40,7 +48,7 @@ function GuessScreen({ song, answerLength }) {
         overflow: 'hidden',
       }}
     >
-      <Timer
+      {/* <Timer
         startTime={Date.now()}
         timeoutBufferMs={500}
         timeoutMs={START_ROUND_TIMEOUT}
@@ -62,7 +70,7 @@ function GuessScreen({ song, answerLength }) {
           prefix=""
           suffix=""
         />
-      )}
+      )} */}
       <Grid
         spacing={1}
         container
@@ -91,6 +99,7 @@ function GuessScreen({ song, answerLength }) {
       <audio
         controls
         autoPlay
+        ref={(el) => { audioRef.current = el; }}
         onEnded={() => setStartTime(Date.now())}
       >
         <source src={`songs/${song}.mp3`} type="audio/mpeg" />
@@ -142,10 +151,12 @@ function WordField({
     />
   );
 }
+
 GuessScreen.propTypes = {
   song: PropTypes.string.isRequired,
   answerLength: PropTypes.number.isRequired,
 };
+
 WordField.propTypes = {
   idx: PropTypes.number.isRequired,
   setFocus: PropTypes.func.isRequired,
