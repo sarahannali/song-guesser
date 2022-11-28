@@ -1,9 +1,10 @@
 /* eslint-disable no-empty-pattern */
 import React, { useState, useEffect } from 'react';
 import client from '@urturn/client';
-// import styles from './Game.module.css';
 // import GuessScreen from './GuessScreen';
 import PropTypes from 'prop-types';
+import { Box } from '@mui/material';
+import styles from './Game.module.css';
 import PostRoundScreen from './PostRoundScreen';
 import GuessScreen from './GuessScreen';
 import HomeScreen from './HomeScreen';
@@ -49,7 +50,13 @@ function Game() {
   }, []);
 
   return (
-    <div>
+    <Box
+      sx={{
+        backgroundColor: '#4074A4',
+        fontFamily: "'Bungee Spice', cursive",
+      }}
+      styles={styles}
+    >
       {joinable
         ? <HomeScreen players={players} />
         : (
@@ -64,7 +71,7 @@ function Game() {
             guesses={rounds[currentRound]?.guesses || []}
           />
         ) }
-    </div>
+    </Box>
   );
 }
 

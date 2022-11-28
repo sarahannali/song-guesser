@@ -21,6 +21,7 @@ function HomeScreen({ players }) {
         sx={{
           fontSize: '3em',
           color: 'white',
+          fontFamily: 'Bungee',
         }}
       >
         SONG GUESSER
