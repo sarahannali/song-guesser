@@ -49,6 +49,7 @@ function getNewRound(songs, currentSongIndex) { //also return answer length
   return {
   song: songs[currentSongIndex], 
   playerPoints: {},
+  guesses: [],
   answerLength: Answer[songs[currentSongIndex]].split(" ").length,
   startTime: Date.now()
   }
@@ -69,6 +70,10 @@ function onPlayerMove(player, move, roomState) {
       state.totalPoints[player.id] = 0;
       return { joinable: false, state: state }
     case MoveTypes.Guess:
+      currentRound.guesses.push({
+        user: player.username,
+        guess: data
+      });
       if (data.trim() === Answer[songs[currentSongIndex]]) {
         currentRound.playerPoints[player.id] = Math.floor(((currentRound.startTime + ROUND_LENGTH) - Date.now()) / 10);
         state.totalPoints = rounds.reduce((prev, round) => {
@@ -77,11 +82,9 @@ function onPlayerMove(player, move, roomState) {
           });
           return prev;
         }, {});
-
-        return { state: state }
-      } else {
-        throw new Error("Wrong answer!")
       }
+
+      return { state: state }
     case MoveTypes.ForceEndRound:
       currentRound.playerPoints[player.id] = 0;
       return { state: state }
