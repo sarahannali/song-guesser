@@ -46,6 +46,7 @@ function PostRoundScreen({
   totalPoints, playerPoints, finished, players,
 }) {
   const waitingForPlayers = Object.keys(playerPoints).length !== players.length;
+  const list = finished ? totalPoints : playerPoints;
   return (
     <Stack
       tabIndex="0"
@@ -57,14 +58,15 @@ function PostRoundScreen({
         alignItems: 'center',
       }}
     >
-      {Object.keys(finished ? totalPoints : playerPoints).map((playerID, idx) => (
-        <PlayerResults
-          username={players.find((player) => player.id === playerID)?.username || ''}
-          roundPoints={playerPoints[playerID]}
-          totalPoints={totalPoints[playerID]}
-          firstPlace={idx === 0}
-          finished={finished}
-        />
+      {(Object.keys(list)
+        .sort((a, b) => list[a] - list[b]).reverse()).map((playerID, idx) => (
+          <PlayerResults
+            username={players.find((player) => player.id === playerID)?.username || ''}
+            roundPoints={playerPoints[playerID]}
+            totalPoints={totalPoints[playerID]}
+            firstPlace={idx === 0}
+            finished={finished}
+          />
       ))}
       {!finished && (
       <Button
