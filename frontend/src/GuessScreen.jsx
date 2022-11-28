@@ -10,6 +10,8 @@ import {
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import client from '@urturn/client';
+import PauseIcon from '@mui/icons-material/Pause';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import useFlash from './Hooks/useFlash';
 import { SHAKE_KEYFRAMES } from './Helpers/constants';
 import Timer from './Helpers/Timer';
@@ -31,7 +33,6 @@ const NUMBER_TO_WORDS = {
 
 function GuessScreen({ song, answerLength }) {
   const refs = useRef([]);
-  const audioRef = useRef();
   const [answer, setAnswer] = useState(Array(answerLength).fill(''));
   const [startTime, setStartTime] = useState(null);
   const { flash, flashing } = useFlash();
@@ -44,10 +45,6 @@ function GuessScreen({ song, answerLength }) {
     refs.current[0].focus();
     flash();
   };
-
-  useEffect(() => {
-    audioRef.current.volume = 0.4;
-  }, []);
 
   return (
     <Stack
@@ -135,36 +132,46 @@ function GuessScreen({ song, answerLength }) {
         SUBMIT
 
       </Button>
-      <audio
-        controls
-        autoPlay
-        ref={(el) => { audioRef.current = el; }}
-        onEnded={() => setStartTime(Date.now())}
-      >
-        <source src={`songs/${song}.mp3`} type="audio/mpeg" />
-        Your browser does not support the audio element.
-      </audio>
-      <PlayButton audioRef={audioRef} />
+      <PlayButton song={song} setStartTime={setStartTime} />
     </Stack>
   );
 }
 
-function PlayButton({ audioRef }) {
-  const [playing, setPlaying] = useState(false);
+function PlayButton({ song, setStartTime }) {
+  const [playing, setPlaying] = useState(true);
+  const audioRef = useRef();
+
+  useEffect(() => {
+    audioRef.current.volume = 0.1;
+  }, []);
 
   return (
-    <IconButton
-      onClick={() => {
-        if (playing) {
-          audioRef.current.pause();
-        } else {
-          audioRef.current.play();
-        }
-        setPlaying(!playing);
-      }}
-    >
-      {playing ? 'PAUSE' : 'PLAY'}
-    </IconButton>
+    <>
+      <IconButton
+        onClick={() => {
+          if (playing) {
+            audioRef.current.pause();
+          } else {
+            audioRef.current.play();
+          }
+          setPlaying(!playing);
+        }}
+        disableRipple
+      >
+        {playing
+          ? <PauseIcon color="secondary" sx={{ fontSize: '3em' }} />
+          : <PlayArrowIcon color="secondary" sx={{ fontSize: '3em' }} />}
+      </IconButton>
+      <audio
+        autoPlay
+        ref={(el) => { audioRef.current = el; }}
+        onPlay={() => setPlaying(true)}
+        onEnded={() => { setStartTime(Date.now()); setPlaying(false); }}
+      >
+        <source src={`songs/${song}.mp3`} type="audio/mpeg" />
+        Your browser does not support the audio element.
+      </audio>
+    </>
   );
 }
 
@@ -186,7 +193,7 @@ function WordField({
       autoComplete="off"
       inputProps={{ style: { fontSize: useMediaQuery('(max-width:600px)') ? '1.5em' : '2rem' } }}
       sx={{
-        backgroundColor: error ? '#ff9292' : 'white',
+        backgroundColor: error ? '#FF9292' : '#D9D9D9',
       }}
       value={answer[idx]}
       onChange={(e) => {
@@ -216,12 +223,8 @@ GuessScreen.propTypes = {
 };
 
 PlayButton.propTypes = {
-  audioRef: PropTypes.oneOfType([
-    // Either a function
-    PropTypes.func,
-    // Or the instance of a DOM native element (see the note about SSR)
-    PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
-  ]).isRequired,
+  song: PropTypes.string.isRequired,
+  setStartTime: PropTypes.func.isRequired,
 };
 
 WordField.propTypes = {

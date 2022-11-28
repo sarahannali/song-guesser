@@ -58,7 +58,7 @@ function HomeScreen({ players }) {
               fontFamily: 'Bungee',
               fontSize: '1.35em',
             }}
-            color="text.primary"
+            color="primary.main"
           >
             Players
 
@@ -66,7 +66,7 @@ function HomeScreen({ players }) {
           <List dense disablePadding padding={0}>
             {players.map((player, ind) => (
               <ListItem dense disablePadding key={player.id}>
-                <ListItemText primary={`${ind + 1}: ${player.username}`} />
+                <ListItemText color="red" primary={`${ind + 1}: ${player.username}`} />
               </ListItem>
             ))}
           </List>
