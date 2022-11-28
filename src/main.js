@@ -10,12 +10,13 @@ const MoveTypes = Object.freeze({
 });
 
 const Answer = Object.freeze({
-  Dont_Stop_Believing: 'lonely world',
-  Stitches: 'no ones ever',
+  DontStopBelieving: 'lonely world',
+  Stitches: 'red',
   Firework: 'ignite the light',
   MrBrightside: 'off her dress',
-  You_Belong_With_Me: 'bleachers',
-  Baby: 'together'
+  YouBelongWithMe: 'bleachers',
+  Baby: 'together',
+  HeyJude: 'sad song'
 })
 
 const ROUND_LENGTH = 20000;
