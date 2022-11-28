@@ -6,7 +6,7 @@ import { Button, Typography } from '@mui/material';
 import client from '@urturn/client';
 
 function PlayerResults({
-  username, totalPoints, roundPoints, firstPlace,
+  username, totalPoints, roundPoints, firstPlace, finished,
 }) {
   return (
     <Stack
@@ -35,10 +35,12 @@ function PlayerResults({
           color: 'green',
         }}
       >
+        {!finished && (
         <Typography variant="h5">
           +
           {roundPoints}
         </Typography>
+        )}
       </Box>
     </Stack>
   );
@@ -58,12 +60,13 @@ function PostRoundScreen({
         alignItems: 'center',
       }}
     >
-      {Object.keys(playerPoints).map((playerID, idx) => (
+      {Object.keys(finished ? totalPoints : playerPoints).map((playerID, idx) => (
         <PlayerResults
           username={players.find((player) => player.id === playerID)?.username || ''}
           roundPoints={playerPoints[playerID]}
           totalPoints={totalPoints[playerID]}
           firstPlace={idx === 0}
+          finished={finished}
         />
       ))}
       {!finished && (
@@ -93,6 +96,7 @@ PlayerResults.propTypes = {
   totalPoints: PropTypes.number.isRequired,
   roundPoints: PropTypes.number.isRequired,
   firstPlace: PropTypes.bool,
+  finished: PropTypes.bool.isRequired,
 };
 
 PlayerResults.defaultProps = {

@@ -14,7 +14,7 @@ const Answer = Object.freeze({
   Firework: 'ignite the light',
   MrBrightside: 'off her dress',
   You_Belong_With_Me: 'bleachers',
-  Baby: "together"
+  Baby: 'together'
 })
 
 function onRoomStart(roomState) {
@@ -79,7 +79,7 @@ function onPlayerMove(player, move, roomState) {
         throw new Error("Wrong answer!")
       }
     case MoveTypes.NewRound:
-      if(rounds.length < 10 && currentSongIndex !== songs.length-1){
+      if(rounds.length < 2 && currentSongIndex !== songs.length-1){
       state.currentSongIndex += 1;
       rounds.push(getNewRound(songs, state.currentSongIndex));
       return { state: state }
