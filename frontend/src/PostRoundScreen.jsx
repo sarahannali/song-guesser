@@ -6,7 +6,7 @@ import { Button, Typography } from '@mui/material';
 import client from '@urturn/client';
 
 function PlayerResults({
-  username, totalPoints, roundPoints, firstPlace,
+  username, totalPoints, roundPoints, firstPlace, finished,
 }) {
   return (
     <Stack
@@ -31,10 +31,12 @@ function PlayerResults({
         </Stack>
       </Box>
       <Box>
+        {!finished && (
         <Typography variant="h5" color={roundPoints === 0 ? 'red' : 'green'}>
           +
           {roundPoints}
         </Typography>
+        )}
       </Box>
     </Stack>
   );
@@ -44,6 +46,7 @@ function PostRoundScreen({
   totalPoints, playerPoints, finished, players, guesses,
 }) {
   const waitingForPlayers = Object.keys(playerPoints).length !== players.length;
+  const list = finished ? totalPoints : playerPoints;
   return (
     <Stack
       tabIndex="0"
@@ -55,13 +58,15 @@ function PostRoundScreen({
         alignItems: 'center',
       }}
     >
-      {Object.keys(playerPoints).map((playerID, idx) => (
-        <PlayerResults
-          username={players.find((player) => player.id === playerID)?.username || ''}
-          roundPoints={playerPoints[playerID]}
-          totalPoints={totalPoints[playerID]}
-          firstPlace={idx === 0}
-        />
+      {(Object.keys(list)
+        .sort((a, b) => list[a] - list[b]).reverse()).map((playerID, idx) => (
+          <PlayerResults
+            username={players.find((player) => player.id === playerID)?.username || ''}
+            roundPoints={playerPoints[playerID]}
+            totalPoints={totalPoints[playerID]}
+            firstPlace={idx === 0}
+            finished={finished}
+          />
       ))}
       {!finished && (
       <Button
@@ -110,6 +115,7 @@ PlayerResults.propTypes = {
   totalPoints: PropTypes.number.isRequired,
   roundPoints: PropTypes.number.isRequired,
   firstPlace: PropTypes.bool,
+  finished: PropTypes.bool.isRequired,
 };
 
 PlayerResults.defaultProps = {

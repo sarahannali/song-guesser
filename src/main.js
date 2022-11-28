@@ -89,7 +89,7 @@ function onPlayerMove(player, move, roomState) {
       currentRound.playerPoints[player.id] = 0;
       return { state: state }
     case MoveTypes.NewRound:
-      if(rounds.length < 10 && currentSongIndex !== songs.length-1){
+      if(rounds.length < 2 && currentSongIndex !== songs.length-1){
       state.currentSongIndex += 1;
       rounds.push(getNewRound(songs, state.currentSongIndex));
       return { state: state }
