@@ -42,7 +42,12 @@ function Timer({
 
   return visible
     ? (
-      <Typography color={timeLeftSecs <= 10 ? 'red' : 'text.primary'}>
+      <Typography
+        fontSize="2em"
+        fontFamily="Bungee"
+        color="white"
+      >
+        :
         {`${prefix}${getDisplayTimeLeftSecs(timeLeftSecs)}${suffix}`}
       </Typography>
     )

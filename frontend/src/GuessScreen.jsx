@@ -4,6 +4,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Stack from '@mui/material/Stack';
 import {
+  Box,
   Grid, TextField, Typography, useMediaQuery,
 } from '@mui/material';
 import PropTypes from 'prop-types';
@@ -13,13 +14,25 @@ import { SHAKE_KEYFRAMES } from './Helpers/constants';
 import Timer from './Helpers/Timer';
 
 const START_ROUND_TIMEOUT = 20000;
-const POST_AUDIO_TIMEOUT = 10000;
+const POST_AUDIO_TIMEOUT = 15000;
+
+const NUMBER_TO_WORDS = {
+  1: 'one',
+  2: 'two',
+  3: 'three',
+  4: 'four',
+  5: 'five',
+  6: 'six',
+  7: 'seven',
+  8: 'eight',
+  9: 'nine',
+};
 
 function GuessScreen({ song, answerLength }) {
   const refs = useRef([]);
   const audioRef = useRef();
   const [answer, setAnswer] = useState(Array(answerLength).fill(''));
-  const [startTime, setStartTime] = useState(null);
+  const [startTime, setStartTime] = useState(Date.now());
   const { flash, flashing } = useFlash();
 
   const setFocus = (idx) => refs.current[idx].focus();
@@ -56,19 +69,37 @@ function GuessScreen({ song, answerLength }) {
         prefix=""
         suffix=""
         visible={false}
-      />
+      /> */}
       {startTime && (
-        <Timer
-          startTime={startTime}
-          timeoutBufferMs={500}
-          timeoutMs={POST_AUDIO_TIMEOUT}
-          onTimeout={() => {
-            client.makeMove({ type: 'force_end_round' }).catch(console.log);
-          }}
-          prefix=""
-          suffix=""
-        />
-      )} */}
+        <Box sx={{
+          position: 'absolute',
+          top: 0,
+          right: 20,
+        }}
+        >
+          <Timer
+            startTime={startTime}
+            timeoutBufferMs={500}
+            timeoutMs={POST_AUDIO_TIMEOUT}
+          // onTimeout={() => {
+          //   client.makeMove({ type: 'force_end_round' }).catch(console.log);
+          // }}
+            prefix=""
+            suffix=""
+          />
+        </Box>
+      )}
+      <Typography
+        color="white"
+        fontFamily="Bungee"
+        fontSize=".8em"
+      >
+        WHAT ARE THE NEXT
+        {' '}
+        {NUMBER_TO_WORDS[answerLength]}
+        {' '}
+        WORDS?
+      </Typography>
       <Grid
         spacing={1}
         container

@@ -87,7 +87,7 @@ function PostRoundScreen({
 
 function OtherPlayerViews({ guesses }) {
   const lastGuess = guesses[guesses.length - 1];
-  return (
+  return lastGuess && (
     <Typography color="white">
       {lastGuess.user}
       :
