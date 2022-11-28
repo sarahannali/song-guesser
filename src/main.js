@@ -5,7 +5,8 @@
 const MoveTypes = Object.freeze({
   StartGame: 'start_game',
   Guess: 'guess',
-  NewRound: 'new_round'
+  NewRound: 'new_round',
+  ForceEndRound: 'force_end_round'
 });
 
 const Answer = Object.freeze({
@@ -16,6 +17,8 @@ const Answer = Object.freeze({
   You_Belong_With_Me: 'bleachers',
   Baby: 'together'
 })
+
+const ROUND_LENGTH = 20000;
 
 function onRoomStart(roomState) {
   return {
@@ -46,7 +49,8 @@ function getNewRound(songs, currentSongIndex) { //also return answer length
   return {
   song: songs[currentSongIndex], 
   playerPoints: {},
-  answerLength: Answer[songs[currentSongIndex]].split(" ").length
+  answerLength: Answer[songs[currentSongIndex]].split(" ").length,
+  startTime: Date.now()
   }
 }
 
@@ -55,7 +59,7 @@ function onPlayerMove(player, move, roomState) {
   const { type, data } = move;
   const { rounds, songs, currentSongIndex } = state;
 
-  const currentRound = rounds.length - 1;
+  const currentRound = rounds[rounds.length - 1];
 
   switch (type) {
     case MoveTypes.StartGame:
@@ -66,7 +70,7 @@ function onPlayerMove(player, move, roomState) {
       return { joinable: false, state: state }
     case MoveTypes.Guess:
       if (data.trim() === Answer[songs[currentSongIndex]]) {
-        rounds[currentRound].playerPoints[player.id] = 100;
+        currentRound.playerPoints[player.id] = Math.floor(((currentRound.startTime + ROUND_LENGTH) - Date.now()) / 10);
         state.totalPoints = rounds.reduce((prev, round) => {
           Object.keys(round.playerPoints).map(plrID => {
             prev[plrID] != null ? prev[plrID] += round.playerPoints[plrID] : prev[plrID] = round.playerPoints[plrID]
@@ -78,6 +82,9 @@ function onPlayerMove(player, move, roomState) {
       } else {
         throw new Error("Wrong answer!")
       }
+    case MoveTypes.ForceEndRound:
+      currentRound.playerPoints[player.id] = 0;
+      return { state: state }
     case MoveTypes.NewRound:
       if(rounds.length < 2 && currentSongIndex !== songs.length-1){
       state.currentSongIndex += 1;

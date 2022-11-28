@@ -5,24 +5,29 @@ import Stack from '@mui/material/Stack';
 import { Grid, TextField, useMediaQuery } from '@mui/material';
 import PropTypes from 'prop-types';
 import client from '@urturn/client';
+import useFlash from './Hooks/useFlash';
+import { SHAKE_KEYFRAMES } from './Helpers/constants';
+import Timer from './Helpers/Timer';
+
+const START_ROUND_TIMEOUT = 20000;
+const POST_AUDIO_TIMEOUT = 10000;
 
 function GuessScreen({ song, answerLength }) {
   const refs = useRef([]);
-  const [answer, setAnswer] = useState(['', '', '']);
-  // eslint-disable-next-line no-unused-vars
-  const [answerError, setError] = useState(false);
+  const [answer, setAnswer] = useState(Array(answerLength).fill(''));
+  const [startTime, setStartTime] = useState(null);
+  const { flash, flashing } = useFlash();
 
   const setFocus = (idx) => refs.current[idx].focus();
   const submitAnswer = async () => {
     const { error } = await client.makeMove({ type: 'guess', data: answer.join(' ') });
     console.log(error);
     if (error) {
-      setError(true);
-      // setTimeout(setError(false), 500);
+      setAnswer(Array(answerLength).fill(''));
+      refs.current[0].focus();
+      flash();
     }
   };
-
-  console.log(answerLength);
 
   return (
     <Stack
@@ -32,12 +37,40 @@ function GuessScreen({ song, answerLength }) {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        overflow: 'hidden',
       }}
     >
+      <Timer
+        startTime={Date.now()}
+        timeoutBufferMs={500}
+        timeoutMs={START_ROUND_TIMEOUT}
+        onTimeout={() => {
+          client.makeMove({ type: 'force_end_round' }).catch(console.log);
+        }}
+        prefix=""
+        suffix=""
+        visible={false}
+      />
+      {startTime && (
+        <Timer
+          startTime={startTime}
+          timeoutBufferMs={500}
+          timeoutMs={POST_AUDIO_TIMEOUT}
+          onTimeout={() => {
+            client.makeMove({ type: 'force_end_round' }).catch(console.log);
+          }}
+          prefix=""
+          suffix=""
+        />
+      )}
       <Grid
         spacing={1}
         container
         justifyContent="center"
+        sx={{
+          animation: flashing ? 'shake .5s linear infinite' : 'none',
+          '@keyframes shake': SHAKE_KEYFRAMES,
+        }}
       >
         {[...Array(answerLength).keys()].map((i) => (
           <Grid item>
@@ -49,13 +82,17 @@ function GuessScreen({ song, answerLength }) {
               setAnswer={setAnswer}
               innerRef={(el) => { refs.current[i] = el; }}
               answerLength={answerLength - 1}
-              error={answerError}
+              error={flashing}
             />
           </Grid>
         ))}
 
       </Grid>
-      <audio controls autoPlay>
+      <audio
+        controls
+        autoPlay
+        onEnded={() => setStartTime(Date.now())}
+      >
         <source src={`songs/${song}.mp3`} type="audio/mpeg" />
         Your browser does not support the audio element.
       </audio>

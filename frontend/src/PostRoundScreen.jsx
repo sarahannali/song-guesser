@@ -30,13 +30,9 @@ function PlayerResults({
           <Typography variant="h5">{totalPoints}</Typography>
         </Stack>
       </Box>
-      <Box
-        sx={{
-          color: 'green',
-        }}
-      >
+      <Box>
         {!finished && (
-        <Typography variant="h5">
+        <Typography variant="h5" color={roundPoints === 0 ? 'red' : 'green'}>
           +
           {roundPoints}
         </Typography>
@@ -49,9 +45,10 @@ function PlayerResults({
 function PostRoundScreen({
   totalPoints, playerPoints, finished, players,
 }) {
-  console.log('PLAYERS: ', players);
+  const waitingForPlayers = Object.keys(playerPoints).length !== players.length;
   return (
     <Stack
+      tabIndex="0"
       spacing={2}
       sx={{
         height: '100vh',
@@ -74,8 +71,11 @@ function PostRoundScreen({
         variant="contained"
         size="large"
         onClick={() => client.makeMove({ type: 'new_round' })}
+        autoFocus
+        disabled={waitingForPlayers}
+        disableRipple
       >
-        NEXT ROUND
+        {waitingForPlayers ? 'WAITING FOR PLAYERS...' : 'NEXT ROUND'}
       </Button>
       )}
     </Stack>
