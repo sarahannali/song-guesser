@@ -16,7 +16,10 @@ const Answer = Object.freeze({
   MrBrightside: 'off her dress',
   YouBelongWithMe: 'bleachers',
   Baby: 'together',
-  HeyJude: 'sad song'
+  HeyJude: 'sad song',
+  CarelessWhisper: "rhythm",
+  IWillAlwaysLoveYou: "with me",
+  Yeah: "come and get me"
 })
 
 const ROUND_LENGTH = 20000;
@@ -25,7 +28,7 @@ function onRoomStart(roomState) {
   return {
     state: {
       rounds: [],
-      songs: ["Dont_Stop_Believing", "Stitches", "Firework", "MrBrightside", "You_Belong_With_Me", "Baby"],
+      songs: ["DontStopBelieving", "Stitches", "Firework", "MrBrightside", "YouBelongWithMe", "Baby"],
       currentSongIndex: 0,
       totalPoints: {},
     }
